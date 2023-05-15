@@ -75,7 +75,7 @@ sheet = Spritesheet("sprites/flag.png")
 animation_frame = 0
 
 # HUD VARIABLE
-difficulty_select_list = hud.SelectList(DIFFICULTIES, (CELL_SIZE/2, TOP_SIZE/2), (CELL_SIZE*2.5, int(CELL_SIZE/1.5)))
+difficulty_select_list = hud.SelectList(DIFFICULTIES, (CELL_SIZE // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
 police = pygame.font.Font("fonts/Orbitron.ttf", 36)
 chronometer_start = 0
 
