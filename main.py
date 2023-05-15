@@ -32,7 +32,7 @@ class Spritesheet:
                 for x in range(image_count)]
         return self.images_at(tups, colorkey)
 
-GRID_SIZE = 6
+GRID_SIZE = 7
 CELL_SIZE = 50
 BOMB_AMOUNT = int((GRID_SIZE ** 2) / 8)
 
