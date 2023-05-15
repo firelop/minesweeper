@@ -1,4 +1,5 @@
 import pygame, random, time
+import hud
 
 class Spritesheet:
     def __init__(self, filename):
@@ -74,6 +75,7 @@ sheet = Spritesheet("sprites/flag.png")
 animation_frame = 0
 
 # HUD VARIABLE
+difficulty_select_list = hud.SelectList(DIFFICULTIES, (CELL_SIZE/2, TOP_SIZE/2), (CELL_SIZE*2.5, int(CELL_SIZE/1.5)))
 police = pygame.font.Font("fonts/Orbitron.ttf", 36)
 chronometer_start = 0
 
@@ -81,9 +83,11 @@ def render_hud():
     window.fill("black")
     window.fill(DARK_GRAY, (0, 0, CELL_SIZE * GRID_SIZE, TOP_SIZE))
 
+    difficulty_select_list.display(window)
+
     chronometer_time = int((pygame.time.get_ticks() - chronometer_start) / 1000)
     if chronometer_time > 60 :
-        chronometer_time = f"{chronometer_time / 60} : {chronometer_time % 60}"
+        chronometer_time = f"{int(chronometer_time / 60)} : {chronometer_time % 60}"
     chronometer_text = police.render(str(chronometer_time).encode(), True, (255, 255, 255))
 
     window.blit(chronometer_text,
@@ -128,10 +132,6 @@ def render():
 
         animation_frame = (animation_frame + 0.0003) % 4
 
-
-
-
-
 playing = True
 first = True
 clock.tick(30)
@@ -140,11 +140,13 @@ while playing:  # Main loop
     render()
 
     for event in pygame.event.get():
+
         if event.type == pygame.QUIT:
             playing = False
 
         if event.type == pygame.MOUSEBUTTONUP:
             (x, y) = pygame.mouse.get_pos()
+            difficulty_select_list.mouse_clic((x, y))
             y -= TOP_SIZE
 
             if y < 0:
@@ -154,8 +156,8 @@ while playing:  # Main loop
 
             if event.button == 1:
                 if cell_value == -1:
-                    if first:
-                        bomb_generation(x, y)
+                    # if first:
+                        # bomb_generation(x, y)
                     grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = 1
             elif event.button == 3:
                 if cell_value == -1:
