@@ -76,24 +76,15 @@ animation_frame = 0
 
 # HUD VARIABLE
 difficulty_select_list = hud.SelectList(window, DIFFICULTIES, (CELL_SIZE // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
+chronometer = hud.Chronometer(window, (CELL_SIZE * GRID_SIZE, TOP_SIZE))
 police = pygame.font.Font("fonts/Orbitron.ttf", 36)
-chronometer_start = 0
 
 def render_hud():
     window.fill("black")
     window.fill(DARK_GRAY, (0, 0, CELL_SIZE * GRID_SIZE, TOP_SIZE))
 
     difficulty_select_list.display()
-
-    chronometer_time = int((pygame.time.get_ticks() - chronometer_start) / 1000)
-    if chronometer_time > 60 :
-        chronometer_time = f"{int(chronometer_time / 60)} : {chronometer_time % 60}"
-    chronometer_text = police.render(str(chronometer_time).encode(), True, (255, 255, 255))
-
-    window.blit(chronometer_text,
-                (CELL_SIZE * GRID_SIZE / 2 - (chronometer_text.get_width()/2)
-                 , TOP_SIZE / 2 - (chronometer_text.get_height() / 2))
-                )
+    chronometer.display()
 
 def bomb_generation(x, y):
     bombs_pos = []

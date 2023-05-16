@@ -71,3 +71,27 @@ class SelectList:
             # self.open = False
             print(self.selected_option)
             break
+
+
+class Chronometer:
+
+  def __init__(self, window, position):
+    self.window = window
+    self.position = position
+    self.time = 0
+    self.txt_time = ''
+
+  def display(self):
+    police = pygame.font.Font("fonts/Orbitron.ttf", 36)
+    self.time = int(pygame.time.get_ticks() / 1000)
+
+    self.txt_time = f"0:{self.time}"
+    if self.time > 60:
+        self.txt_time = f"{int(self.time / 60)} : {self.time % 60}"
+
+    txt_time_area = police.render(str(self.txt_time).encode(), True, (255, 255, 255))
+    print(self.txt_time)
+
+    self.window.blit(txt_time_area, 
+                     (self.position[0] // 2 - (txt_time_area.get_width() // 2), 
+                      self.position[1] // 2 - (txt_time_area.get_height() // 2)))
