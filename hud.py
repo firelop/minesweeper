@@ -90,8 +90,10 @@ class Chronometer:
         self.txt_time = f"{int(self.time / 60)} : {self.time % 60}"
 
     txt_time_area = police.render(str(self.txt_time).encode(), True, (255, 255, 255))
-    print(self.txt_time)
 
     self.window.blit(txt_time_area, 
                      (self.position[0] // 2 - (txt_time_area.get_width() // 2), 
                       self.position[1] // 2 - (txt_time_area.get_height() // 2)))
+    
+  def restart(self):
+    self.time = 0
