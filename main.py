@@ -1,5 +1,5 @@
 import pygame, random, time
-import hud
+import hud, windows
 
 class Spritesheet:
     def __init__(self, filename):

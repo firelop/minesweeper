@@ -72,7 +72,6 @@ class SelectList:
             print(self.selected_option)
             break
 
-
 class Chronometer:
 
   def __init__(self, window, position):
