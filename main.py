@@ -75,7 +75,7 @@ sheet = Spritesheet("sprites/flag.png")
 animation_frame = 0
 
 # HUD VARIABLE
-difficulty_select_list = hud.SelectList(DIFFICULTIES, (CELL_SIZE // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
+difficulty_select_list = hud.SelectList(window, DIFFICULTIES, (CELL_SIZE // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
 police = pygame.font.Font("fonts/Orbitron.ttf", 36)
 chronometer_start = 0
 
@@ -83,7 +83,7 @@ def render_hud():
     window.fill("black")
     window.fill(DARK_GRAY, (0, 0, CELL_SIZE * GRID_SIZE, TOP_SIZE))
 
-    difficulty_select_list.display(window)
+    difficulty_select_list.display()
 
     chronometer_time = int((pygame.time.get_ticks() - chronometer_start) / 1000)
     if chronometer_time > 60 :
@@ -139,8 +139,11 @@ while playing:  # Main loop
     render_hud()
     render()
 
-    for event in pygame.event.get():
+    # Display difficulties
+    if difficulty_select_list.open :
+        difficulty_select_list.display_difficulties()
 
+    for event in pygame.event.get():
         if event.type == pygame.QUIT:
             playing = False
 
