@@ -1,22 +1,14 @@
-import pygame, random, time
-import hud, windows
+import pygame, random, time, hud, windows, game
+from consts import *
 
 pygame.init()
 window = pygame.display.set_mode((GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE + TOP_SIZE))
 pygame.display.set_caption("Démineur")
 
-
 clock = pygame.time.Clock()
 
 difficulty_select_list = hud.SelectList(DIFFICULTIES, (CELL_SIZE // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
 police = pygame.font.Font("fonts/Orbitron.ttf", 36)
-
-def render_hud():
-    window.fill("black")
-    window.fill(DARK_GRAY, (0, 0, CELL_SIZE * GRID_SIZE, TOP_SIZE))
-
-    difficulty_select_list.display()
-    chronometer.display()
 
 def bomb_generation(x, y):
     bombs_pos = []
@@ -42,13 +34,13 @@ def proximity_values(bombs_pos):
 
 
 
-game = Game()
+game = game.Game(window, DIFFICULTIES[DIFFICULTY])
 
 playing = True
 first = True
 clock.tick(30)
 while playing:  # Main loop
-    render_hud()
+    hud.render_hud(window)
 
     # Display difficulties
     if difficulty_select_list.open :

@@ -81,7 +81,7 @@ class Chronometer:
     self.txt_time = ''
 
   def display(self):
-    police = pygame.font.Font("fonts/Orbitron.ttf", 36)
+    police = pygame.font.Font("fonts/SpaceMono-Regular.ttf", 36)
     self.time = int(pygame.time.get_ticks() / 1000)
 
     self.txt_time = f"0:{self.time}"
@@ -96,3 +96,11 @@ class Chronometer:
     
   def restart(self):
     self.time = 0
+
+
+def render_hud(window):
+    window.fill("black")
+    window.fill(DARK_GRAY, (0, 0, CELL_SIZE * GRID_SIZE, TOP_SIZE))
+
+    difficulty_select_list.display()
+    chronometer.display()

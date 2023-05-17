@@ -1,15 +1,10 @@
 import pygame
+from consts import *
 
 pygame.init()
 
 WIDTH = 400
 HEIGHT = 550
-
-DIFFICULTIES = {
-    "easy": {"grid_size": 10, "cell_size": 50},
-    "medium": {"grid_size": 15, "cell_size": 35},
-    "hard": {"grid_size": 20, "cell_size": 30}
-  }
 
 def load_difficulties(window, difficulties):
   dico_return = {}

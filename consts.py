@@ -9,10 +9,13 @@ GREEN = (50, 144, 143)
 GRAY = (232, 246, 238)
 DARK_GRAY = (128, 128, 128)
 
+DIFFICULTIES = {
+    "easy": {"grid_size": 10, "cell_size": 50},
+    "medium": {"grid_size": 15, "cell_size": 35},
+    "hard": {"grid_size": 20, "cell_size": 30}
+}
 DIFFICULTY = "easy"
 
 GRID_SIZE = DIFFICULTY["grid_size"]
 CELL_SIZE = DIFFICULTY["cell_size"]
 BOMB_AMOUNT = int((GRID_SIZE ** 2) / 8)
-
-window = None
