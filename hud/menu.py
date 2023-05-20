@@ -9,6 +9,7 @@ class Menu:
     self.difficulties = difficulties
     self.path_img_bc = path_img_bc
     self.isLoaded = False
+    self.difficulty_selected = False
 
   def load(self):
     self.isLoaded = True
@@ -72,7 +73,8 @@ class Menu:
     if self.isLoaded:
       for difficulty, position in self.dico_position.items():
         if position[0] <= position_clic[0] <= position[1] and position[2] <= position_clic[1] <= position[3]:
-          print(difficulty)
+          self.difficulty_selected = difficulty
+          self.isLoaded = False
 
 if __name__ == "__main__":
   pass
