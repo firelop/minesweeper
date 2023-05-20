@@ -1,84 +1,78 @@
-import pygame
+import pygame, time
 from consts import *
-
-pygame.init()
 
 WIDTH = 400
 HEIGHT = 550
 
-def load_difficulties(window, difficulties):
-  dico_return = {}
+class Menu:
+  def __init__(self, difficulties, path_img_bc = "img/background.png"):
+    self.difficulties = difficulties
+    self.path_img_bc = path_img_bc
+    self.isLoaded = False
 
-  police = pygame.font.Font('./fonts/Orbitron.ttf', 30)
-  bc_color = (220, 220, 220)
-  txt_color = (50, 50, 50)
+  def load(self):
+    self.isLoaded = True
+    self.window = pygame.display.set_mode((WIDTH, HEIGHT))
+    self.img_bc = pygame.image.load(self.path_img_bc).convert()
 
-  x = WIDTH // 2
-  width_difficulty = 150
-  height_difficulty = 70
-  for difficulty in range(len(difficulties)):
-    y = HEIGHT // 2 - ((len(difficulties) - difficulty) * height_difficulty) // 2 + 70 * difficulty
-    
-    txt = str(list(difficulties.keys())[difficulty])
-    txt_area = police.render(txt, True, txt_color)
+    self.x_bc = 1
+    self.direction = 1
 
-    pygame.draw.rect(window, bc_color, (x - width_difficulty // 2, y - height_difficulty // 2, width_difficulty, height_difficulty))
-    window.blit(txt_area, (x - txt_area.get_width() // 2, y - txt_area.get_height() // 2))
+    self.last_tick = time.time()
 
-    dico_return[f'{txt}'] = [x - width_difficulty // 2, x + width_difficulty // 2, y - height_difficulty // 2, y + height_difficulty // 2]
+    return self.window
 
-  return dico_return
+  def display(self):
+    if self.isLoaded:
+      # Background Image
+      self.window.blit(self.img_bc, (self.x_bc, 0))
 
-def clic_menu(position_clic, dico_position):
-  for difficulty, position in dico_position.items():
-    if position[0] <= position_clic[0] <= position[1] and position[2] <= position_clic[1] <= position[3]:
-      print(difficulty)
+      # Mouving Image
+      current_tick = time.time()
+      elapsed_time = current_tick - self.last_tick
 
-def load_menu():
-  menu = pygame.display.set_mode((WIDTH, HEIGHT))
-  pygame.display.set_caption("Démineur")
+      if elapsed_time >= 0.03:
+        self.x_bc += self.direction
 
-  img_bc = pygame.image.load("img/background.png").convert()
+        if self.x_bc <= -360:
+          self.direction = 1
+        elif self.x_bc >= 0:
+          self.direction = -1
 
-  clock = pygame.time.Clock()
-  running = True
-  x_bc = 1
-  direction = 1
-  last_tick = pygame.time.get_ticks()
-  while running:
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-          running = False
-    
-    # Background Image
-    menu.blit(img_bc, (x_bc, 0))
+        self.last_tick = current_tick
 
-    # Mouving Image
-    current_tick = pygame.time.get_ticks()
-    elapsed_time = current_tick - last_tick
+      difficulties_position = self.load_difficulties()
 
-    if elapsed_time >= 4:
-      x_bc += direction
+  def load_difficulties(self):
+    if self.isLoaded:
+      self.dico_position = {}
 
-      if x_bc <= -360:
-        direction = 1
-      elif x_bc >= 0:
-        direction = -1
+      police = pygame.font.Font('./fonts/Orbitron.ttf', 30)
+      bc_color = (220, 220, 220)
+      txt_color = (50, 50, 50)
 
-    last_tick = current_tick
+      x = WIDTH // 2
+      width_difficulty = 150
+      height_difficulty = 70
+      for difficulty in range(len(self.difficulties)):
+        y = HEIGHT // 2 - ((len(self.difficulties) - difficulty) * height_difficulty) // 2 + 70 * difficulty
+        
+        txt = str(list(self.difficulties.keys())[difficulty])
+        txt_area = police.render(txt, True, txt_color)
 
-    # Loader
-    difficulties_position = load_difficulties(menu, DIFFICULTIES)
+        pygame.draw.rect(self.window, bc_color, (x - width_difficulty // 2,
+                        y - height_difficulty // 2, width_difficulty, height_difficulty))
+        self.window.blit(txt_area, (x - txt_area.get_width() //
+                        2, y - txt_area.get_height() // 2))
 
-    # Clic
-    if event.type == pygame.MOUSEBUTTONUP:
-        (x, y) = pygame.mouse.get_pos()
-        clic_menu((x, y), difficulties_position)
+        self.dico_position[f'{txt}'] = [x - width_difficulty // 2, x +
+                                      width_difficulty // 2, y - height_difficulty // 2, y + height_difficulty // 2]
 
-    pygame.display.flip()
-    clock.tick(60)
-
-  pygame.quit()
+  def clic(self, position_clic):
+    if self.isLoaded:
+      for difficulty, position in self.dico_position.items():
+        if position[0] <= position_clic[0] <= position[1] and position[2] <= position_clic[1] <= position[3]:
+          print(difficulty)
 
 if __name__ == "__main__":
-  load_menu()
+  pass

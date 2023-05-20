@@ -2,8 +2,10 @@ import pygame, random, time, hud.hud as hud, hud.menu as menu, game
 from consts import *
 
 pygame.init()
-window = pygame.display.set_mode((GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE + TOP_SIZE))
 pygame.display.set_caption("Démineur")
+
+menu = menu.Menu(DIFFICULTIES)
+window = menu.load()
 
 clock = pygame.time.Clock()
 
@@ -25,7 +27,8 @@ def proximity_values(bombs_pos):
             lx = i % 3
             ly = i // 3
             print(bx - lx, by - ly)
-            # if bx - lx >= 0 and by - ly >= 0:
+            # if b
+            # x - lx >= 0 and by - ly >= 0:
                 # if(bomb_list[by - ly][bx - lx] != -1):
                 #     bomb_list[by - ly][bx - lx] += 1
 
@@ -41,6 +44,8 @@ first = True
 clock.tick(30)
 while playing:  # Main loop
     hud.render_hud(window, difficulty_select_list, chronometer)
+    if menu.isLoaded:
+        menu.display()
 
     # Display difficulties
     if difficulty_select_list.open :
@@ -52,26 +57,30 @@ while playing:  # Main loop
 
         if event.type == pygame.MOUSEBUTTONUP:
             (x, y) = pygame.mouse.get_pos()
-            difficulty_select_list.mouse_clic((x, y))
-            y -= TOP_SIZE
 
-            if y < 0:
-                break
+            if menu.isLoaded:
+                menu.clic((x, y))
+            else:
+                difficulty_select_list.mouse_clic((x, y))
+                y -= TOP_SIZE
 
-            cell_value = game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)]
+                if y < 0:
+                    break
 
-            if event.button == 1:
-                if cell_value == -1:
-                    if first:
-                        print("Hey yo")
-                        bomb_generation(x, y)
-                        first = False
-                    game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = 1
-            elif event.button == 3:
-                if cell_value == -1:
-                    game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = 2
-                else:
-                    game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = -1
+                # cell_value = game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)]
+
+                if event.button == 1:
+                    if cell_value == -1:
+                        if first:
+                            print("Hey yo")
+                            bomb_generation(x, y)
+                            first = False
+                        game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = 1
+                elif event.button == 3:
+                    if cell_value == -1:
+                        game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = 2
+                    else:
+                        game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = -1
 
     pygame.display.flip()
 
