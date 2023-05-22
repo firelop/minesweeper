@@ -1,14 +1,13 @@
-import pygame, random, time, hud, windows, game
+import pygame, random, time, hud.hud as hud, hud.menu as menu, game
 from consts import *
 
 pygame.init()
-window = pygame.display.set_mode((GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE + TOP_SIZE))
 pygame.display.set_caption("Démineur")
 
-clock = pygame.time.Clock()
+menu = menu.Menu(DIFFICULTIES)
+window = menu.load()
 
-difficulty_select_list = hud.SelectList(DIFFICULTIES, (CELL_SIZE // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
-police = pygame.font.Font("fonts/Orbitron.ttf", 36)
+clock = pygame.time.Clock()
 
 def bomb_generation(x, y):
     bombs_pos = []
@@ -17,7 +16,7 @@ def bomb_generation(x, y):
         by = random.randint(0, GRID_SIZE - 1)
         if bx > x-1 and bx < x+1 and by > y-1 and by < y+1:
             bombs_pos.append((bx, by))
-            bomb_list[by][bx] = -1
+            # bomb_list[by][bx] = -1
     
     proximity_values(bombs_pos)
     
@@ -28,19 +27,25 @@ def proximity_values(bombs_pos):
             lx = i % 3
             ly = i // 3
             print(bx - lx, by - ly)
-            if bx - lx >= 0 and by - ly >= 0:
-                if(bomb_list[by - ly][bx - lx] != -1):
-                    bomb_list[by - ly][bx - lx] += 1
-
-
+            # if b
+            # x - lx >= 0 and by - ly >= 0:
+                # if(bomb_list[by - ly][bx - lx] != -1):
+                #     bomb_list[by - ly][bx - lx] += 1
 
 game = game.Game(window, DIFFICULTIES[DIFFICULTY])
 
+# HUD VARIABLE
+difficulty_select_list = hud.SelectList(window, DIFFICULTIES, (CELL_SIZE // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
+chronometer = hud.Chronometer(window, (GRID_SIZE * CELL_SIZE // 2, TOP_SIZE // 2))
+
+police = pygame.font.Font("fonts/Orbitron.ttf", 36)
 playing = True
 first = True
 clock.tick(30)
 while playing:  # Main loop
-    hud.render_hud(window)
+    hud.render_hud(window, difficulty_select_list, chronometer)
+    if menu.isLoaded:
+        menu.display()
 
     # Display difficulties
     if difficulty_select_list.open :
@@ -52,26 +57,30 @@ while playing:  # Main loop
 
         if event.type == pygame.MOUSEBUTTONUP:
             (x, y) = pygame.mouse.get_pos()
-            difficulty_select_list.mouse_clic((x, y))
-            y -= TOP_SIZE
 
-            if y < 0:
-                break
+            if menu.isLoaded:
+                menu.clic((x, y))
+            else:
+                difficulty_select_list.mouse_clic((x, y))
+                y -= TOP_SIZE
 
-            cell_value = grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)]
+                if y < 0:
+                    break
 
-            if event.button == 1:
-                if cell_value == -1:
-                    if first:
-                        print("Hey yo")
-                        bomb_generation(x, y)
-                        first = False
-                    grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = 1
-            elif event.button == 3:
-                if cell_value == -1:
-                    grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = 2
-                else:
-                    grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = -1
+                # cell_value = game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)]
+
+                if event.button == 1:
+                    if cell_value == -1:
+                        if first:
+                            print("Hey yo")
+                            bomb_generation(x, y)
+                            first = False
+                        game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = 1
+                elif event.button == 3:
+                    if cell_value == -1:
+                        game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = 2
+                    else:
+                        game.grid[int(y / CELL_SIZE)][int(x / CELL_SIZE)] = -1
 
     pygame.display.flip()
 
