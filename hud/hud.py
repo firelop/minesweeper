@@ -1,8 +1,5 @@
-import pygame
+import pygame, time
 from consts import *
-
-pygame.init()
-
 
 class SelectList:
   def __init__(self, window, options, position, size):
@@ -75,25 +72,34 @@ class SelectList:
             # self.open = False
             print(self.selected_option)
             break
-
+    else:
+      self.open = False
 
 class Chronometer:
 
-  def __init__(self, window, position):
+  def __init__(self, window):
     self.window = window
-    self.position = position
+    self.start_time = 0
     self.time = 0
+    self.restart()
     self.txt_time = ''
+    self.setup_position()
+
+  def setup_position(self):
+    self.position = (cell_size * grid_size // 2, TOP_SIZE // 2)
+
 
   def display(self):
-    police = pygame.font.Font(None, 36)
-    self.time = int(pygame.time.get_ticks() / 1000)
+    FONT_CHRONOMETER = pygame.font.Font("./fonts/SpaceMono-Regular.ttf", 36)
+    self.time = int(time.time() - self.start_time)
 
     self.txt_time = f"0:{self.time}"
     if self.time > 60:
-        self.txt_time = f"{int(self.time / 60)} : {self.time % 60}"
+        self.txt_time = f"{int(self.time / 60)}:{self.time % 60}"
+    if self.time % 60 <= 9 :
+        self.txt_time = f"{int(self.time / 60)}:0{self.time % 60}"
 
-    txt_time_area = police.render(
+    txt_time_area = FONT_CHRONOMETER.render(
         str(self.txt_time).encode(), True, (255, 255, 255))
 
     self.window.blit(txt_time_area,
@@ -101,11 +107,11 @@ class Chronometer:
                       self.position[1] // 2 - (txt_time_area.get_height() // 2)))
 
   def restart(self):
-    self.time = 0
+    self.start_time = time.time()
 
 def render_hud(window, select_list, chronometer):
     window.fill("black")
-    window.fill(DARK_GRAY, (0, 0, CELL_SIZE * GRID_SIZE, TOP_SIZE))
+    window.fill(DARK_GRAY, (0, 0, cell_size * grid_size, TOP_SIZE))
 
     select_list.display()
     chronometer.display()

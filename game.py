@@ -1,49 +1,117 @@
-import pygame, spritesheet
-from consts import *
+import pygame, spritesheet, random
+from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, BLUE, GREEN, GRAY
 
 def get_grid(default):
-    return [[default for x in range(GRID_SIZE)] for y in range(GRID_SIZE)]
+    return [[default for x in range(grid_size)] for y in range(grid_size)]
+
+def proximity_values(bombs_pos):
+    pass
+    # for bx, by in bombs_pos:
+    #     for i in range(9):
+    #         lx = i % 3
+    #         ly = i // 3
+    #         print(bx - lx, by - ly)
+    #         # if b
+    #         # x - lx >= 0 and by - ly >= 0:
+    #             # if(bomb_list[by - ly][bx - lx] != -1):
+    #             #     bomb_list[by - ly][bx - lx] += 1
+
+def bomb_generation(bomb_list, x, y):
+    bombs_pos = []
+    print(bomb_list)
+    # while len(bomb_list) < bomb_amount:
+        
+    #     pass
+    # bombs_pos = []
+    # while len(bombs_pos) < BOMB_AMOUNT:
+    #     bx = random.randint(0, grid_size - 1)
+    #     by = random.randint(0, grid_size - 1)
+    #     if bx > x-1 and bx < x+1 and by > y-1 and by < y+1:
+    #         bombs_pos.append((bx, by))
+    #         # bomb_list[by][bx] = -1
+    
+    # proximity_values(bombs_pos)
 
 class Game:
     def __init__(self, window, difficulty):
         self.window = window
         self.difficulty = difficulty
-        self.bomb_grid = get_grid(0)
+        grid_size = difficulty["grid_size"]
+        cell_size = difficulty["cell_size"]
+        print(grid_size, cell_size)
+        bomb_amount = int(difficulty["grid_size"]/8)
+        self.resize()
+        self.bomb_list = get_grid(0)
+        self.first = True
         self.grid = get_grid(-1)
+        self.animation_frame = 0
+        self.playing = True
         self.animation_frame = 0
         self.sheet = spritesheet.Spritesheet("sprites/flag.png")
 
+    def resize(self):
+        self.window = pygame.display.set_mode((cell_size*grid_size, cell_size*grid_size + TOP_SIZE))
 
-    def render(self, ):
-        global animation_frame
+    def render(self):
 
         y = 0
-        for i in range(len(grid)):
+        for _ in range(len(self.grid)):
 
-            for x in range(len(grid[y])):
-                cell_value = grid[y][x]
+            for x in range(len(self.grid[y])):
+                cell_value = self.grid[y][x]
                 if cell_value == 1:
-                    window.fill(GRAY, (x * CELL_SIZE, y * CELL_SIZE + TOP_SIZE, CELL_SIZE, CELL_SIZE + TOP_SIZE))
+                    self.window.fill(GRAY, (x * cell_size, y * cell_size + TOP_SIZE, cell_size, cell_size + TOP_SIZE))
 
                 elif cell_value == 2:
-                    window.fill(BLUE if (x + y) % 2 == 0 else GREEN,
-                                (x * CELL_SIZE, y * CELL_SIZE + TOP_SIZE, CELL_SIZE, CELL_SIZE + TOP_SIZE))
-                    window.blit(
+                    self.window.fill(BLUE if (x + y) % 2 == 0 else GREEN,
+                                (x * cell_size, y * cell_size + TOP_SIZE, cell_size, cell_size + TOP_SIZE))
+                    self.window.blit(
                         pygame.transform.scale(
-                            sheet.image_at((
-                                int(animation_frame) * 16, 0, 16, 16
+                            self.sheet.image_at((
+                                int(self.animation_frame) * 16, 0, 16, 16
                             )),
-                            (CELL_SIZE, CELL_SIZE)
-                        ), (x * CELL_SIZE, y * CELL_SIZE + TOP_SIZE)
+                            (cell_size, cell_size)
+                        ), (x * cell_size, y * cell_size + TOP_SIZE)
                     )
                 else:
-                    window.fill(BLUE if (x + y) % 2 == 0 else GREEN,
-                                (x * CELL_SIZE, y * CELL_SIZE + TOP_SIZE, CELL_SIZE, CELL_SIZE + TOP_SIZE))
+                    self.window.fill(BLUE if (x + y) % 2 == 0 else GREEN,
+                                (x * cell_size, y * cell_size + TOP_SIZE, cell_size, cell_size + TOP_SIZE))
 
                 pol = pygame.font.Font("fonts/Orbitron.ttf", 46)
-                txt = pol.render(str(bomb_list[y][x]), True, (0, 0, 0))
-                window.blit(pygame.transform.scale(txt, (CELL_SIZE, CELL_SIZE)), (x * CELL_SIZE, y * CELL_SIZE + TOP_SIZE, CELL_SIZE, CELL_SIZE + TOP_SIZE))
+                txt = pol.render(str(self.bomb_list[y][x]), True, (0, 0, 0))
+                self.window.blit(pygame.transform.scale(txt, (cell_size, cell_size)), (x * cell_size, y * cell_size + TOP_SIZE, cell_size, cell_size + TOP_SIZE))
 
             y += 1
 
-            animation_frame = (animation_frame + 0.0003) % 4
+            self.animation_frame = (self.animation_frame + 0.0003) % 4
+
+    def click(self, x, y, event):
+        y -= TOP_SIZE
+        
+        if y < 0:
+            return
+        
+
+        
+
+    
+
+        cell_value = self.grid[y // cell_size][x // cell_size]
+
+        if(self.first):
+            self.first = False
+            self.bomb_generation(self.bomb_list, x//cell_size, y//cell_size)
+
+        if event.button == 1:
+            if cell_value == -1:
+                if first:
+                    bomb_generation(x, y)
+                    first = False
+                self.grid[y // cell_size][x // cell_size] = 1
+        elif event.button == 3:
+            if cell_value == -1:
+                self.grid[y // cell_size][x // cell_size] = 2
+            else:
+                self.grid[y // cell_size][x // cell_size] = -1
+
+    

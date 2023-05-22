@@ -42,7 +42,7 @@ class Menu:
 
         self.last_tick = current_tick
 
-      difficulties_position = self.load_difficulties()
+      self.load_difficulties()
 
   def load_difficulties(self):
     if self.isLoaded:
@@ -55,10 +55,19 @@ class Menu:
       x = WIDTH // 2
       width_difficulty = 150
       height_difficulty = 70
-      for difficulty in range(len(self.difficulties)):
-        y = HEIGHT // 2 - ((len(self.difficulties) - difficulty) * height_difficulty) // 2 + 70 * difficulty
+      for difficulty in range(len(self.difficulties) + 1):
+        y = HEIGHT // 2 - (((len(self.difficulties) + 1) - difficulty) * height_difficulty) // 2 + 60 * difficulty
         
-        txt = str(list(self.difficulties.keys())[difficulty])
+        if difficulty < len(self.difficulties):
+          txt = str(list(self.difficulties.keys())[difficulty])
+        else:
+          txt = "Quitter"
+          width_difficulty = 120
+          height_difficulty = 55
+          bc_color = RED
+          txt_color = (220, 220, 220)
+          police = pygame.font.Font('./fonts/Orbitron.ttf', 25)
+
         txt_area = police.render(txt, True, txt_color)
 
         pygame.draw.rect(self.window, bc_color, (x - width_difficulty // 2,
