@@ -1,5 +1,5 @@
 import pygame, spritesheet, random
-from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, BLUE, GREEN, GRAY
+from consts import bomb_amount, grid_size, cell_size, set_grid_size, set_bomb_amount, set_cell_size, TOP_SIZE, BLUE, GREEN, GRAY
 
 def get_grid(default):
     return [[default for x in range(grid_size)] for y in range(grid_size)]
@@ -34,12 +34,13 @@ def bomb_generation(bomb_list, x, y):
 
 class Game:
     def __init__(self, window, difficulty):
+        print(difficulty)
         self.window = window
         self.difficulty = difficulty
-        grid_size = difficulty["grid_size"]
-        cell_size = difficulty["cell_size"]
-        print(grid_size, cell_size)
-        bomb_amount = int(difficulty["grid_size"]/8)
+        set_grid_size(difficulty["grid_size"])
+        set_cell_size(difficulty["cell_size"])
+        set_bomb_amount(difficulty["grid_size"]//8)
+        print(grid_size, cell_size, bomb_amount)
         self.resize()
         self.bomb_list = get_grid(0)
         self.first = True
@@ -53,7 +54,6 @@ class Game:
         self.window = pygame.display.set_mode((cell_size*grid_size, cell_size*grid_size + TOP_SIZE))
 
     def render(self):
-
         y = 0
         for _ in range(len(self.grid)):
 
@@ -83,35 +83,29 @@ class Game:
 
             y += 1
 
-            self.animation_frame = (self.animation_frame + 0.0003) % 4
+            self.animation_frame = (self.animation_frame + 0.016) % 4
 
     def click(self, x, y, event):
         y -= TOP_SIZE
         
         if y < 0:
             return
-        
-
-        
-
-    
+            
 
         cell_value = self.grid[y // cell_size][x // cell_size]
 
-        if(self.first):
-            self.first = False
-            self.bomb_generation(self.bomb_list, x//cell_size, y//cell_size)
+        
 
         if event.button == 1:
             if cell_value == -1:
-                if first:
-                    bomb_generation(x, y)
-                    first = False
+                if(self.first):
+                    self.first = False
+                    bomb_generation(self.bomb_list, x//cell_size, y//cell_size)
                 self.grid[y // cell_size][x // cell_size] = 1
         elif event.button == 3:
             if cell_value == -1:
                 self.grid[y // cell_size][x // cell_size] = 2
-            else:
+            elif cell_value == 2:
                 self.grid[y // cell_size][x // cell_size] = -1
 
     

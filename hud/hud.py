@@ -103,14 +103,13 @@ class Chronometer:
         str(self.txt_time).encode(), True, (255, 255, 255))
 
     self.window.blit(txt_time_area,
-                     (self.position[0] // 2 - (txt_time_area.get_width() // 2),
-                      self.position[1] // 2 - (txt_time_area.get_height() // 2)))
+                     (self.position[0] - (txt_time_area.get_width() // 2),
+                      self.position[1] - (txt_time_area.get_height() // 2)))
 
   def restart(self):
     self.start_time = time.time()
 
 def render_hud(window, select_list, chronometer):
-    window.fill("black")
     window.fill(DARK_GRAY, (0, 0, cell_size * grid_size, TOP_SIZE))
 
     select_list.display()

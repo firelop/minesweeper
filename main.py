@@ -43,12 +43,14 @@ chronometer.setup_position()
 chronometer.restart()
 
 while game.playing:  # Main loops
-    game.render()
     hud.render_hud(window, difficulty_select_list, chronometer)
 
     # Display difficulties
     if difficulty_select_list.open :
         difficulty_select_list.display_difficulties()
+    else:
+        game.render()
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -62,7 +64,6 @@ while game.playing:  # Main loops
             
             difficulty_select_list.mouse_clic((x, y))
         
-
 
     pygame.display.flip()
 

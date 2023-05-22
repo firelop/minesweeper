@@ -19,3 +19,22 @@ difficulty = "easy"
 grid_size = 10
 cell_size = 50
 bomb_amount = int((GRID_SIZE ** 2) / 8)
+
+
+def set_grid_size(val):
+    print(val)
+    global grid_size
+    grid_size = val
+    return grid_size
+
+def set_cell_size(val):
+    print(val)
+    global cell_size
+    cell_size = val
+    return cell_size
+
+def set_bomb_amount(val):
+    global bomb_amount
+    bomb_amount = val
+    return bomb_amount
+
