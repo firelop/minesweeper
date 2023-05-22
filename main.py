@@ -11,7 +11,7 @@ clock = pygame.time.Clock()
 
 
 # HUD VARIABLE
-difficulty_select_list = hud.SelectList(window, DIFFICULTIES, (cell_size // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
+difficulty_select_list = hud.SelectList(window, DIFFICULTIES, (cell_size.get() // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
 chronometer = hud.Chronometer(window)
 
 police = pygame.font.Font("fonts/Orbitron.ttf", 36)

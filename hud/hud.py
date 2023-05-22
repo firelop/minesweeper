@@ -86,7 +86,7 @@ class Chronometer:
     self.setup_position()
 
   def setup_position(self):
-    self.position = (cell_size * grid_size // 2, TOP_SIZE // 2)
+    self.position = (cell_size.get() * grid_size.get() // 2, TOP_SIZE // 2)
 
 
   def display(self):
@@ -110,7 +110,7 @@ class Chronometer:
     self.start_time = time.time()
 
 def render_hud(window, select_list, chronometer):
-    window.fill(DARK_GRAY, (0, 0, cell_size * grid_size, TOP_SIZE))
+    window.fill(DARK_GRAY, (0, 0, cell_size.get() * grid_size.get(), TOP_SIZE))
 
     select_list.display()
     chronometer.display()
