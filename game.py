@@ -25,7 +25,7 @@ def proximity_values(bomb_list, bombs_pos):
     
 
 
-    return bomb_list
+    return bomb_list, bombs_pos
     
 
 def bomb_generation(bomb_list, x, y):
@@ -59,11 +59,38 @@ class Game:
         self.grid = get_grid(-1)
         self.animation_frame = 0
         self.playing = True
+        self.game_over = False
+        self.won = False
+        self.bomb_pos = []
+        self.flag_pos = []
         self.animation_frame = 0
         self.sheet = spritesheet.Spritesheet("sprites/flag.png")
 
     def resize(self):
         self.window = pygame.display.set_mode((cell_size.get()*grid_size.get(), cell_size.get()*grid_size.get() + TOP_SIZE))
+
+    def check_flag_win(self):
+        checks = [a in self.flag_pos for a in self.bomb_pos]
+        return all(checks)
+        
+    
+    def flag(self, x, y, event):
+        y -= TOP_SIZE
+     
+        if y < 0:
+            return
+            
+        cell_value = self.grid[y // cell_size.get()][x // cell_size.get()]
+        if cell_value == -1 and len(self.flag_pos) < len(self.bomb_pos):
+                self.grid[y // cell_size.get()][x // cell_size.get()] = 2
+                self.flag_pos.append((x // cell_size.get(), y // cell_size.get()))
+                if self.check_flag_win():
+                    self.playing = False
+                    self.won = True
+                    return
+        elif cell_value == 2:
+                self.grid[y // cell_size.get()][x // cell_size.get()] = -1
+                self.flag_pos.remove((x // cell_size.get(), y // cell_size.get()))
 
     def render(self):
         y = 0
@@ -100,8 +127,9 @@ class Game:
 
     def propagate(self, x, y):
         if self.bomb_list[y][x] == -1:
-            pygame.quit()
-            exit()
+            self.playing = False
+            self.game_over = True
+            return
 
         if self.bomb_list[y][x] != 0:
             return
@@ -142,13 +170,9 @@ class Game:
             if cell_value == -1:
                 if(self.first):
                     self.first = False
-                    self.bomb_list = bomb_generation(self.bomb_list, x//cell_size.get(), y//cell_size.get())
+                    self.bomb_list, self.bomb_pos = bomb_generation(self.bomb_list, x//cell_size.get(), y//cell_size.get())
                 self.grid[y // cell_size.get()][x // cell_size.get()] = 1
                 self.propagate(x//cell_size.get(), y//cell_size.get())
-        elif event.button == 3:
-            if cell_value == -1:
-                self.grid[y // cell_size.get()][x // cell_size.get()] = 2
-            elif cell_value == 2:
-                self.grid[y // cell_size.get()][x // cell_size.get()] = -1
+            
 
     
