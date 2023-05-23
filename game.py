@@ -5,36 +5,39 @@ def get_grid(default):
     return [[default for x in range(grid_size.get())] for y in range(grid_size.get())]
 
 def proximity_values(bomb_list, bombs_pos):
-    pass
-    # for bx, by in bombs_pos:
-    #     for y in range(3):
-    #         for x in range(3):
-    #             tx = (bx - x) + 1
-    #             ty = (by - y) + 1
+    print(len(bombs_pos*9))
+    v = 0
+    for bx, by in bombs_pos:
+        for relative_y in range(by-1, by+2):
+            for relative_x in range(bx-1, bx+2):
+                v+=1
+                if relative_y < 0 or relative_x < 0:
+                    continue
 
-    #             if ty < 0 or tx < 0:
-    #                 continue
-
-    #             if ty > grid_size.get()-1 or tx > grid_size.get()-1:
-    #                 continue
-
-    #             if bomb_list[ty][tx] == -1:
-    #                 continue
-
+                if relative_x > grid_size.get()-1 or relative_y > grid_size.get()-1:
+                    continue
                 
-    #             bomb_list[ty][tx] += 1
+                if bomb_list[relative_y][relative_x] == -1:
+                    continue
+                bomb_list[relative_y][relative_x] += 1
 
-    # return bomb_list
+    print(v)
+    
+
+
+    return bomb_list
     
 
 def bomb_generation(bomb_list, x, y):
     bombs_pos = []
     bomb_count = 0
-    bomb_amount.set(grid_size.get()**2 // 8)
+    bomb_amount.set((grid_size.get()**2 // 63)*10)
     print(bomb_amount.get())
     while bomb_count < bomb_amount.get():
         bx = random.randint(0, grid_size.get() - 1)
         by = random.randint(0, grid_size.get() - 1)
+        if bomb_list[by][bx] == -1:
+            continue
         if bx > x+1 or bx < x-1 and by > y+1 or by < y-1:
             bombs_pos.append((bx, by))
             bomb_list[by][bx] = -1
@@ -90,15 +93,20 @@ class Game:
                     self.window.fill(BLUE if (x + y) % 2 == 0 else GREEN,
                                 (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
 
-                
 
             y += 1
 
             self.animation_frame = (self.animation_frame + 0.016) % 4
 
     def propagate(self, x, y):
-        if(self.bomb_list[y][x] != 0):
+        if self.bomb_list[y][x] == -1:
+            pygame.quit()
+            exit()
+
+        if self.bomb_list[y][x] != 0:
             return
+        
+ 
         for i in range(3):
             for n in range(3):
                 a = (x - n)+1
@@ -115,6 +123,8 @@ class Game:
                         self.propagate(a, b)
                 elif self.bomb_list[b][a] != -1:
                     self.grid[b][a] = 1
+
+
                     
                 
 
@@ -127,8 +137,6 @@ class Game:
             
 
         cell_value = self.grid[y // cell_size.get()][x // cell_size.get()]
-
-        
 
         if event.button == 1:
             if cell_value == -1:
