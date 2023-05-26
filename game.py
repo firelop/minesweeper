@@ -1,5 +1,5 @@
 import pygame, spritesheet, random
-from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, BLUE, GREEN, GRAY
+from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, DARK_GREEN, GREEN, BEIGE, DARK_BEIGE
 
 def get_grid(default):
     return [[default for x in range(grid_size.get())] for y in range(grid_size.get())]
@@ -99,12 +99,13 @@ class Game:
             for x in range(len(self.grid[y])):
                 cell_value = self.grid[y][x]
                 if cell_value == 1:
-                    self.window.fill(GRAY, (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
-                    pol = pygame.font.Font("fonts/Orbitron.ttf", 46)
+                    self.window.fill(BEIGE if (x + y) % 2 == 0 else DARK_BEIGE,
+                                (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
+                    pol = pygame.font.Font("fonts/SpaceMono-Regular.ttf", 46)
                     if(self.bomb_list[y][x] != 0):
                         txt = pol.render(str(self.bomb_list[y][x]), True, (0, 0, 0))
                         self.window.blit(pygame.transform.scale(txt, (cell_size.get(), cell_size.get())), (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
-
+                    
                 elif cell_value == 2:
                     self.window.fill(BLUE if (x + y) % 2 == 0 else GREEN,
                                 (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
@@ -117,7 +118,7 @@ class Game:
                         ), (x * cell_size.get(), y * cell_size.get() + TOP_SIZE)
                     )
                 else:
-                    self.window.fill(BLUE if (x + y) % 2 == 0 else GREEN,
+                    self.window.fill(GREEN if (x + y) % 2 == 0 else DARK_GREEN,
                                 (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
 
 
