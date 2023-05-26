@@ -2,10 +2,11 @@ import pygame, time
 from consts import *
 
 class SelectList:
-  def __init__(self, window, options, position, size):
+  def __init__(self, window, options, position, size, game):
     self.window = window
     self.options = options
     self.position = position
+    self.game = game
     self.size = size
     self.open = False
     self.selected_option = None
@@ -71,6 +72,7 @@ class SelectList:
             self.selected_option = list(self.options.keys())[difficulty]
             # self.open = False
             print(self.selected_option)
+            # self.game.difficulty = self.selected_option
             break
     else:
       self.open = False

@@ -13,10 +13,6 @@ while True:
     menu = mnu.Menu(DIFFICULTIES)
     window = menu.load()
 
-    # HUD VARIABLE
-    difficulty_select_list = hud.SelectList(window, DIFFICULTIES, (cell_size.get() // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2))
-    chronometer = hud.Chronometer(window)
-
     while menu.isLoaded:
         menu.display()
         for event in pygame.event.get():
@@ -32,13 +28,16 @@ while True:
 
         pygame.display.flip()
 
-
     if menu.difficulty_selected == "Quitter":
         pygame.quit()
         exit()
-    game = gm.Game(window, DIFFICULTIES[menu.difficulty_selected])
+
+    chronometer = hud.Chronometer(window)
+    game = gm.Game(window, DIFFICULTIES[menu.difficulty_selected], chronometer)
     chronometer.setup_position()
     chronometer.restart()
+    difficulty_select_list = hud.SelectList(
+        window, DIFFICULTIES, (cell_size.get() // 2, TOP_SIZE // 2), (130, TOP_SIZE // 2), game)
 
     while game.playing:  # Main loops
         hud.render_hud(window, difficulty_select_list, chronometer)
@@ -48,7 +47,6 @@ while True:
             difficulty_select_list.display_difficulties()
         else:
             game.render()
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -67,11 +65,8 @@ while True:
 
                 if event.button == 3:
                     game.flag(x, y, event)
-
-
-                
+    
                 difficulty_select_list.mouse_clic((x, y))
-            
 
         pygame.display.flip()
 
@@ -93,8 +88,6 @@ while True:
             if event.type == pygame.KEYUP:
                 space_pressed = event.key == pygame.K_SPACE
                     
-
-
     while game.won and not space_pressed:
         game.window.fill("black")
         police = pygame.font.Font("fonts/SpaceMono-Regular.ttf", 42)
@@ -111,4 +104,5 @@ while True:
 
             if event.type == pygame.KEYUP:
                 space_pressed = event.key == pygame.K_SPACE
+
 pygame.quit()

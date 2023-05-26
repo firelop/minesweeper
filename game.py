@@ -1,5 +1,5 @@
 import pygame, spritesheet, random
-from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, DARK_GREEN, GREEN, BEIGE, DARK_BEIGE
+from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, DARK_GREEN, BLUE, GREEN, BEIGE, DARK_BEIGE
 
 def get_grid(default):
     return [[default for x in range(grid_size.get())] for y in range(grid_size.get())]
@@ -46,10 +46,11 @@ def bomb_generation(bomb_list, x, y):
     return proximity_values(bomb_list, bombs_pos)
 
 class Game:
-    def __init__(self, window, difficulty):
+    def __init__(self, window, difficulty, chrono):
         print(difficulty)
         self.window = window
         self.difficulty = difficulty
+        self.chrono = chrono
         grid_size.set(difficulty["grid_size"])
         cell_size.set(difficulty["cell_size"])
         bomb_amount.set(difficulty["grid_size"]//8)
@@ -107,8 +108,8 @@ class Game:
                         self.window.blit(pygame.transform.scale(txt, (cell_size.get(), cell_size.get())), (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
                     
                 elif cell_value == 2:
-                    self.window.fill(BLUE if (x + y) % 2 == 0 else GREEN,
-                                (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
+                    self.window.fill(GREEN if (x + y) % 2 == 0 else DARK_GREEN,
+                                     (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
                     self.window.blit(
                         pygame.transform.scale(
                             self.sheet.image_at((
@@ -153,11 +154,6 @@ class Game:
                 elif self.bomb_list[b][a] != -1:
                     self.grid[b][a] = 1
 
-
-                    
-                
-
-
     def click(self, x, y, event):
         y -= TOP_SIZE
         
@@ -170,6 +166,7 @@ class Game:
         if event.button == 1:
             if cell_value == -1:
                 if(self.first):
+                    self.chrono.restart()
                     self.first = False
                     self.bomb_list, self.bomb_pos = bomb_generation(self.bomb_list, x//cell_size.get(), y//cell_size.get())
                 self.grid[y // cell_size.get()][x // cell_size.get()] = 1
