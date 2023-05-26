@@ -74,7 +74,13 @@ class Game:
         checks = [a in self.flag_pos for a in self.bomb_pos]
         return all(checks)
         
-    
+    def restart(self):
+        self.resize()
+        self.grid_size.set(self.difficulty["grid_size"])
+        self.cell_size.set(self.difficulty["cell_size"])
+        self.bomb_amount.set(self.difficulty["grid_size"]//8)
+        pass
+
     def flag(self, x, y, event):
         y -= TOP_SIZE
      

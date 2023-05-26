@@ -72,7 +72,9 @@ class SelectList:
             self.selected_option = list(self.options.keys())[difficulty]
             # self.open = False
             print(self.selected_option)
-            # self.game.difficulty = self.selected_option
+            self.game.playing = False
+            self.game.difficulty = DIFFICULTIES[self.selected_option]
+            print(self.game.difficulty)
             break
     else:
       self.open = False
