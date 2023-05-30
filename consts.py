@@ -11,8 +11,9 @@ RED = (200, 25, 25)
 DARK_GRAY = (128, 128, 128)
 BEIGE = (244, 208, 111)
 DARK_BEIGE = (217, 178, 88)
+GOLD = (255, 215, 0)
 
-
+BC_LIST = (210, 210, 210)
 
 DIFFICULTIES = {
     "easy": {"grid_size": 10, "cell_size": 50},

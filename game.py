@@ -1,5 +1,5 @@
 import pygame, spritesheet, random
-from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, DARK_GREEN, GREEN, BEIGE, DARK_BEIGE, BLUE
+from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, DARK_GREEN, BLUE, GREEN, BEIGE, DARK_BEIGE, BC_LIST, DARK_GRAY, RED, GOLD
 
 def get_grid(default):
     return [[default for x in range(grid_size.get())] for y in range(grid_size.get())]
@@ -46,10 +46,11 @@ def bomb_generation(bomb_list, x, y):
     return proximity_values(bomb_list, bombs_pos)
 
 class Game:
-    def __init__(self, window, difficulty):
+    def __init__(self, window, difficulty, chrono):
         print(difficulty)
         self.window = window
         self.difficulty = difficulty
+        self.chrono = chrono
         grid_size.set(difficulty["grid_size"])
         cell_size.set(difficulty["cell_size"])
         bomb_amount.set(difficulty["grid_size"]//8)
@@ -61,9 +62,12 @@ class Game:
         self.playing = True
         self.game_over = False
         self.won = False
+        self.restart_rect = None
+        self.restart = False
         self.bomb_pos = []
         self.flag_pos = []
         self.animation_frame = 0
+        self.font = pygame.font.SysFont('fonts/Cabin.ttf', 48)
         self.sheet = spritesheet.Spritesheet("sprites/flag.png")
 
     def resize(self):
@@ -72,8 +76,7 @@ class Game:
     def check_flag_win(self):
         checks = [a in self.flag_pos for a in self.bomb_pos]
         return all(checks)
-        
-    
+
     def flag(self, x, y, event):
         y -= TOP_SIZE
      
@@ -85,7 +88,6 @@ class Game:
                 self.grid[y // cell_size.get()][x // cell_size.get()] = 2
                 self.flag_pos.append((x // cell_size.get(), y // cell_size.get()))
                 if self.check_flag_win():
-                    self.playing = False
                     self.won = True
                     return
         elif cell_value == 2:
@@ -107,8 +109,8 @@ class Game:
                         self.window.blit(pygame.transform.scale(txt, (cell_size.get(), cell_size.get())), (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
                     
                 elif cell_value == 2:
-                    self.window.fill(BLUE if (x + y) % 2 == 0 else GREEN,
-                                (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
+                    self.window.fill(GREEN if (x + y) % 2 == 0 else DARK_GREEN,
+                                     (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
                     self.window.blit(
                         pygame.transform.scale(
                             self.sheet.image_at((
@@ -121,14 +123,12 @@ class Game:
                     self.window.fill(GREEN if (x + y) % 2 == 0 else DARK_GREEN,
                                 (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
 
-
             y += 1
 
             self.animation_frame = (self.animation_frame + 0.016) % 4
 
     def propagate(self, x, y):
         if self.bomb_list[y][x] == -1:
-            self.playing = False
             self.game_over = True
             return
 
@@ -153,27 +153,78 @@ class Game:
                 elif self.bomb_list[b][a] != -1:
                     self.grid[b][a] = 1
 
-
-                    
-                
-
-
     def click(self, x, y, event):
         y -= TOP_SIZE
         
         if y < 0:
             return
-            
 
         cell_value = self.grid[y // cell_size.get()][x // cell_size.get()]
 
         if event.button == 1:
             if cell_value == -1:
                 if(self.first):
+                    self.chrono.restart()
                     self.first = False
                     self.bomb_list, self.bomb_pos = bomb_generation(self.bomb_list, x//cell_size.get(), y//cell_size.get())
                 self.grid[y // cell_size.get()][x // cell_size.get()] = 1
                 self.propagate(x//cell_size.get(), y//cell_size.get())
-            
-
     
+    def display_game_over(self):
+
+        width = 350
+        height = 150
+        rect_dimension = pygame.Rect(
+            (cell_size.get() * grid_size.get() - width) // 2,
+            (cell_size.get()*grid_size.get() +
+             TOP_SIZE - height) // 2,
+            width, height)
+
+        pygame.draw.rect(self.window, DARK_GRAY, rect_dimension.inflate(10, 10))
+        pygame.draw.rect(self.window, BC_LIST, rect_dimension)
+
+        game_over_text = self.font.render("Game Over", True, RED)
+        self.window.blit(game_over_text, (
+            (cell_size.get() * grid_size.get()) // 2 - game_over_text.get_width() // 2,
+            (cell_size.get()*grid_size.get() + TOP_SIZE) // 2 - game_over_text.get_height() // 2 - 40))
+
+        restart_text = self.font.render("Recommencer", True, BLUE)
+        self.restart_rect = restart_text.get_rect(center=(
+            (cell_size.get() * grid_size.get()) // 2,
+            (cell_size.get() * grid_size.get() + TOP_SIZE) // 2 + 20))
+        pygame.draw.rect(self.window, BLUE, self.restart_rect.inflate(15, 10), 4)
+        self.window.blit(restart_text, self.restart_rect)
+
+    def display_win(self):
+
+        width = 350
+        height = 150
+
+        rect_dimension = pygame.Rect(
+            (cell_size.get() * grid_size.get() - width) // 2,
+            (cell_size.get()*grid_size.get() +
+             TOP_SIZE - height) // 2,
+            width, height)
+
+        pygame.draw.rect(self.window, DARK_GRAY,
+                         rect_dimension.inflate(10, 10))
+        pygame.draw.rect(self.window, BC_LIST, rect_dimension)
+
+        game_over_text = self.font.render("You WIN", True, GOLD)
+        self.window.blit(game_over_text, (
+            (cell_size.get() * grid_size.get()) // 2 -
+            game_over_text.get_width() // 2,
+            (cell_size.get()*grid_size.get() + TOP_SIZE) // 2 - game_over_text.get_height() // 2 - 40))
+
+        restart_text = self.font.render("Recommencer", True, BLUE)
+        self.restart_rect = restart_text.get_rect(center=(
+            (cell_size.get() * grid_size.get()) // 2,
+            (cell_size.get() * grid_size.get() + TOP_SIZE) // 2 + 20))
+        pygame.draw.rect(self.window, BLUE, self.restart_rect.inflate(15, 10), 4)
+        self.window.blit(restart_text, self.restart_rect)
+
+    def endGame_clicked(self, pos):
+        if self.restart_rect == None:
+            return
+        if self.restart_rect.collidepoint(pos):
+            self.restart = True
