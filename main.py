@@ -67,6 +67,11 @@ while True:
                     game.flag(x, y, event)
     
                 difficulty_select_list.mouse_clic((x, y))
+            
+            if difficulty_select_list.isClicked:
+                game.playing = False
+                game = gm.Game(window, DIFFICULTIES[difficulty_select_list.selected_option], chronometer)
+                difficulty_select_list.isClicked = False
 
         pygame.display.flip()
 

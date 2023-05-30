@@ -73,13 +73,6 @@ class Game:
     def check_flag_win(self):
         checks = [a in self.flag_pos for a in self.bomb_pos]
         return all(checks)
-        
-    def restart(self):
-        self.resize()
-        self.grid_size.set(self.difficulty["grid_size"])
-        self.cell_size.set(self.difficulty["cell_size"])
-        self.bomb_amount.set(self.difficulty["grid_size"]//8)
-        pass
 
     def flag(self, x, y, event):
         y -= TOP_SIZE
@@ -127,7 +120,6 @@ class Game:
                 else:
                     self.window.fill(GREEN if (x + y) % 2 == 0 else DARK_GREEN,
                                 (x * cell_size.get(), y * cell_size.get() + TOP_SIZE, cell_size.get(), cell_size.get() + TOP_SIZE))
-
 
             y += 1
 

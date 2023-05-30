@@ -9,6 +9,7 @@ class SelectList:
     self.game = game
     self.size = size
     self.open = False
+    self.isClicked = False
     self.selected_option = None
     self.police = pygame.font.Font(None, int(size[1]/2))
 
@@ -70,11 +71,10 @@ class SelectList:
 
           if mouse_position[0] >= x and mouse_position[0] <= x + width and mouse_position[1] >= y and mouse_position[1] <= y + height:
             self.selected_option = list(self.options.keys())[difficulty]
-            # self.open = False
-            print(self.selected_option)
             self.game.playing = False
             self.game.difficulty = DIFFICULTIES[self.selected_option]
-            print(self.game.difficulty)
+            self.isClicked = True
+            self.open = False
             break
     else:
       self.open = False
