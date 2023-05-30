@@ -7,7 +7,7 @@ Vous cliquerez sur une case:
 
 ## Présentation du projet
 Cette version du démineur est le travail de 3 étudiants (Nolan Appert, Leon Guennec, Pierre Guchet) dans le lycée [https://www.saintaubinlasalle.fr](saint-aubin la salle).
-![Logo saint-aubin la salle](https://www.staubinlasalle.fr/wp-content/uploads/2022/06/cropped-cropped-logo-final-1.1.png)
+![Logo saint-aubin la salle](https://www.staubinlasalle.fr/wp-content/uploads/2022/06/cropped-cropped-logo-final-1.1.png.webp)
 Il est réalisé dans le cadre de la spécialité NSI 1ère.
 
 ## Télécharger et jouer
