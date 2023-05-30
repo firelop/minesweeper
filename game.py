@@ -1,5 +1,5 @@
 import pygame, spritesheet, random
-from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, DARK_GREEN, GREEN, BEIGE, DARK_BEIGE
+from consts import bomb_amount, grid_size, cell_size, TOP_SIZE, DARK_GREEN, GREEN, BEIGE, DARK_BEIGE, BLUE
 
 def get_grid(default):
     return [[default for x in range(grid_size.get())] for y in range(grid_size.get())]
