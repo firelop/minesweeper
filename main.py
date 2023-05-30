@@ -45,13 +45,17 @@ while True:
         # Display difficulties
         if difficulty_select_list.open :
             difficulty_select_list.display_difficulties()
+        elif game.game_over:
+            game.display_game_over()
+        elif game.won:
+            game.display_win()
         else:
             game.render()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game.playing = False
-
+            
             if event.type == pygame.KEYUP:
                 if(event.key == pygame.K_SPACE):
                     (x, y) = pygame.mouse.get_pos()
@@ -65,6 +69,12 @@ while True:
 
                 if event.button == 3:
                     game.flag(x, y, event)
+                
+                if game.game_over or game.won:
+                    game.endGame_clicked((x, y))
+                    if game.restart:
+                        game = gm.Game(window, game.difficulty, chronometer)
+                        game.restart == False
     
                 difficulty_select_list.mouse_clic((x, y))
             
@@ -76,38 +86,5 @@ while True:
         pygame.display.flip()
 
     space_pressed = False
-    while game.game_over and not space_pressed:
-        game.window.fill("black")
-        police = pygame.font.Font("fonts/SpaceMono-Regular.ttf", 42)
-        txt = police.render("Game over", 0, (255, 255, 255))
-        width = game.window.get_width() // 2
-        height = game.window.get_width() // 2
-        
-        game.window.blit(txt, (width-txt.get_width()//2, height-txt.get_height()//2))
-        pygame.display.flip()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game.playing = False
-
-            if event.type == pygame.KEYUP:
-                space_pressed = event.key == pygame.K_SPACE
-                    
-    while game.won and not space_pressed:
-        game.window.fill("black")
-        police = pygame.font.Font("fonts/SpaceMono-Regular.ttf", 42)
-        txt = police.render("You won !", 0, (255, 255, 255))
-        width = game.window.get_width() // 2
-        height = game.window.get_width() // 2
-        
-        game.window.blit(txt, (width-txt.get_width()//2, height-txt.get_height()//2))
-        pygame.display.flip()
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                game.playing = False
-
-            if event.type == pygame.KEYUP:
-                space_pressed = event.key == pygame.K_SPACE
 
 pygame.quit()
